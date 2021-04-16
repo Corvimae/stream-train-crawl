@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dj-flygon-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    app: dj-flygon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dj-flygon
+  labels:
+    app: dj-flygon
+    version: 1.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dj-flygon
+  template:
+    metadata:
+      labels:
+        app: dj-flygon
+    spec:
+      containers:
+      - name: dj-flygon
+        image: corvimae/dj-flygon:latest
+        ports:
+        - containerPort: 3000
+        env:
+          - name: SESSION_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: dj-flygon-secrets
+                key: session.secret
+          - name: NIGHTBOT_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: dj-flygon-secrets
+                key: nightbot.clientId     
+          - name: NIGHTBOT_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: dj-flygon-secrets
+                key: nightbot.secret
