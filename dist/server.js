@@ -58,7 +58,6 @@ app.prepare().then(async () => {
         server.get('/playing', async (req, res) => {
             if (!req.isAuthenticated())
                 return res.status(500).send('Unauthorized');
-            console.log(req.user.accessToken);
             const response = await isomorphic_fetch_1.default('https://api.nightbot.tv/1/song_requests/queue', {
                 method: 'GET',
                 headers: {

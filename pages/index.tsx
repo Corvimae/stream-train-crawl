@@ -5,11 +5,10 @@ import { leftPadPixelMap, messageToPixelMap, rightPadPixelMapToWidth, scalePixel
 const QUEUE_POLL_INTERVAL_MS = 10000;
 const PIXEL_SIZE = 8;
 
-const SCROLL_DELAY_MS = 100;
+const SCROLL_DELAY_MS = 70;
 
 const GRID_WIDTH = 62;
 const GRID_HEIGHT = 27;
-
 
 function slicePixelMap(pixelMap, offset) {
   return rightPadPixelMapToWidth(pixelMap.map(row => row.slice(offset, offset + GRID_WIDTH)), GRID_WIDTH);
