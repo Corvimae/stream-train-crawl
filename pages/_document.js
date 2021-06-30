@@ -33,6 +33,7 @@ class DJFlygonDocument extends Document {
         <Head>
           <title>dj flygon servin' up fresh dual wingbeats</title>
           <link href="https://fonts.googleapis.com/css?family=Assistant:400,700&display=swap" rel="stylesheet" />
+          <link rel="shortcut icon" href="/favicon.png" />
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
