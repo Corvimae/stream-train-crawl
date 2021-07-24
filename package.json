@@ -1,28 +1,20 @@
 {
-  "name": "dj-flygon",
+  "name": "stream-train-crawl",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn build:server && node dist/server.js",
-    "build": "yarn build:frontend && yarn build:server",
-    "build:frontend": "next build",
-    "build:server": "tsc --project server.tsconfig.json",
-    "start": "NODE_ENV=production node dist/server.js"
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-session": "^1.17.1",
     "isomorphic-fetch": "^3.0.0",
     "next": "10.1.3",
-    "passport": "^0.4.1",
-    "passport-oauth2": "^1.5.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "styled-components": "^5.2.3"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0",
     "@types/react": "^17.0.3",
     "typescript": "^4.2.4"
   }

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/router'
 import { leftPadPixelMap, messageToPixelMap, rightPadPixelMapToWidth, scalePixelMap, verticallyCenterPixelMap } from '../utils/letter';
 
-const QUEUE_POLL_INTERVAL_MS = 10000;
 const PIXEL_SIZE = 8;
 
-const SCROLL_DELAY_MS = 70;
+const SCROLL_DELAY_MS = 60;
 
 const GRID_WIDTH = 62;
 const GRID_HEIGHT = 27;
@@ -18,13 +18,9 @@ export default function Home() {
   const scrollOffset = useRef(0);
   const [messageOffset, setMessageOffset] = useState(0);
   const pendingSongInfo = useRef(null);
+  const router = useRouter();
 
-  const [currentSongInfo, setCurrentSongInfo] = useState(null);
-  
-  const messageList = useMemo(() => [
-    currentSongInfo ? `Playing ${currentSongInfo.track.title} by ${currentSongInfo.track.artist} (requested by ${currentSongInfo.user.displayName})` : 'There are no requests.',
-    'Request a song with !sr'
-  ], [currentSongInfo]);
+  const messageList = useMemo(() => [...((router.query.messages as string)?.split(/\|/g) ?? ['Please stand by.'])], [router.query.messages]);
   
   const activeMessageMap = useMemo(() => {
     return leftPadPixelMap(verticallyCenterPixelMap(rightPadPixelMapToWidth(scalePixelMap(messageToPixelMap(messageList[messageOffset]), 1), GRID_WIDTH), GRID_HEIGHT), GRID_WIDTH);
@@ -41,7 +37,6 @@ export default function Home() {
         setMessageOffset((messageOffset + 1) % messageList.length);
 
         if (pendingSongInfo.current !== null) {
-          setCurrentSongInfo(pendingSongInfo.current);
           setMessageOffset(0);
 
           pendingSongInfo.current = null;
@@ -59,31 +54,9 @@ export default function Home() {
       clearTimeout(intervalId);
     };
   }, [activeMessageMap, messageList]);
-
-  useEffect(() => {
-    const fetchCurrentSongInfo = async () => {
-      const response = await fetch('/playing');
-
-      const { _currentSong: currentSong } = await response.json();
-
-      if (currentSongInfo?._id !== currentSong._id && pendingSongInfo.current === null) {
-        console.log('setting current song');
-        pendingSongInfo.current = currentSong;
-      }
-    };
-
-    const intervalId = setInterval(fetchCurrentSongInfo, QUEUE_POLL_INTERVAL_MS);
-
-    fetchCurrentSongInfo();
-
-    return () => {
-      clearTimeout(intervalId);
-    };
-  }, [currentSongInfo]);
   
   return (
     <div>
-      <FlygonImage src="flygon.png" />
       <MatrixContainer>
         <Matrix>
           {activeMessageSubsection.map((rowMap, y) => (
@@ -97,32 +70,11 @@ export default function Home() {
   )
 }
 
-export async function getServerSideProps(ctx) {
-  if (!ctx.req.isAuthenticated()) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-}
-
-
-const FlygonImage = styled.img`
-  width: 1000px;
-  height: 1000px;
-`;
-
 const MatrixContainer = styled.div`
   position: absolute;
   display: flex;
-  top: 422px;
-  left: 140px;
+  top: 16px;
+  left: 16px;
   width: 623px;
   height: 273px;
   justify-content: center;
