@@ -20,9 +20,14 @@ export default function Home() {
   const pendingSongInfo = useRef(null);
   const router = useRouter();
 
-  const messageList = useMemo(() => [...((router.query.messages as string)?.split(/\|/g) ?? ['Please stand by.'])], [router.query.messages]);
+  const messageList = useMemo(() => {
+    const baseList = [...((router.query.messages as string)?.split(/\|/g) ?? ['Please stand by.'])];
+
+    return baseList.reduce((acc, item) => [...acc, 'Please stand by.', item], []);
+  }, [router.query.messages]);
   
-  const activeMessageMap = useMemo(() => {
+  const activeMessageMap = useMemo(() => {    
+
     return leftPadPixelMap(verticallyCenterPixelMap(rightPadPixelMapToWidth(scalePixelMap(messageToPixelMap(messageList[messageOffset]), 1), GRID_WIDTH), GRID_HEIGHT), GRID_WIDTH);
   }, [messageList, messageOffset]);
 
